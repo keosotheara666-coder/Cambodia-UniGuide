@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cambodia Universities Portal | ផតថលសាកលវិទ្យាល័យកម្ពុជា</title>
+  <!-- Google Fonts: Plus Jakarta Sans & Kantumruy Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Kantumruy Pro"', 'sans-serif'],
+            khmer: ['"Kantumruy Pro"', 'sans-serif']
+          },
+          colors: {
+            cambodiaBlue: '#1A365D',
+            cambodiaRed: '#C53030',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', 'Kantumruy Pro', sans-serif; }
+    .badge-budget { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .badge-scholarship { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
+    .badge-regular { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- TOP HEADER & NAVBAR -->
+  <header class="bg-cambodiaBlue text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="w-11 h-11 bg-cambodiaRed rounded-xl flex items-center justify-center text-white shadow-lg font-bold text-2xl select-none">
+            🇰🇭
+          </div>
+          <div>
+            <h1 class="text-base sm:text-xl font-bold leading-tight tracking-tight" id="site-title">Cambodia UniGuide</h1>
+            <p class="text-xs text-slate-300 font-khmer">មគ្គុទ្ទេសក៍គ្រឹះស្ថានឧត្ដមសិក្សាកម្ពុជា</p>
+          </div>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 p-1.5 rounded-lg border border-slate-700">
+          <button id="lang-en" onclick="setLanguage('en')" class="px-2.5 py-1 text-xs font-semibold rounded bg-cambodiaRed text-white transition">English</button>
+          <button id="lang-kh" onclick="setLanguage('kh')" class="px-2.5 py-1 text-xs font-semibold rounded text-slate-300 hover:text-white transition font-khmer">ភាសាខ្មែរ</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="bg-gradient-to-b from-cambodiaBlue to-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center space-y-4">
+      <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight" id="hero-title">
+        Find Your Ideal University, Scholarship & Direct Link
+      </h2>
+      <p class="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto font-khmer" id="hero-subtitle">
+        Explore tuition fees, MoEYS/private scholarship tracks, verified contact info, and official website portals across Cambodia.
+      </p>
+
+      <!-- SEARCH BAR (BILINGUAL) -->
+      <div class="mt-6 relative max-w-2xl mx-auto">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <input
+          type="text"
+          id="searchInput"
+          oninput="handleFilterChange()"
+          placeholder="Search by name, abbreviation (RUPP, ITC, UP, CamEd) or major..."
+          class="w-full pl-11 pr-20 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg text-sm md:text-base font-khmer"
+        />
+        <button onclick="clearSearch()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-xs text-slate-400 hover:text-slate-600 font-medium">
+          Clear
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROLS & COLLECTION TABS -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <!-- Primary Filter Bar -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-8">
+      
+      <!-- Collection Tabs -->
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div class="flex flex-wrap gap-2" id="collection-tabs">
+          <button onclick="selectCollection('all')" data-col="all" class="col-tab px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-cambodiaBlue text-white shadow-sm transition">
+            <i class="fa-solid fa-border-all mr-1.5"></i> <span class="tab-label" data-en="All Universities" data-kh="ទាំងអស់">All Universities</span>
+          </button>
+          
+          <button onclick="selectCollection('scholarship')" data-col="scholarship" class="col-tab px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+            <i class="fa-solid fa-graduation-cap text-indigo-600 mr-1.5"></i> <span class="tab-label" data-en="Scholarship Track" data-kh="កម្មវិធីអាហារូបករណ៍">Scholarship Track</span>
+          </button>
+          
+          <button onclick="selectCollection('nonscholarship')" data-col="nonscholarship" class="col-tab px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+            <i class="fa-solid fa-receipt text-amber-600 mr-1.5"></i> <span class="tab-label" data-en="Direct / Non-Scholarship" data-kh="ការបង់ថ្លៃសិក្សាផ្ទាល់">Direct / Non-Scholarship</span>
+          </button>
+
+          <button onclick="selectCollection('bymajor')" data-col="bymajor" class="col-tab px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+            <i class="fa-solid fa-layer-group text-sky-600 mr-1.5"></i> <span class="tab-label" data-en="Group by Major" data-kh="រៀបតាមជំនាញ">Group by Major</span>
+          </button>
+        </div>
+
+        <!-- Budget Friendly Toggle -->
+        <label class="inline-flex items-center cursor-pointer select-none bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-2 rounded-xl transition">
+          <input type="checkbox" id="budgetToggle" onchange="handleFilterChange()" class="sr-only peer">
+          <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600 relative"></div>
+          <span class="ml-2.5 text-xs sm:text-sm font-bold text-emerald-800">
+            <i class="fa-solid fa-hand-holding-dollar mr-1"></i> <span id="budget-toggle-text">Budget-Friendly Only (&lt;$1,000/yr)</span>
+          </span>
+        </label>
+      </div>
+
+      <!-- Secondary Filters: Major / Category Filter -->
+      <div class="pt-4 flex flex-wrap items-center gap-2 sm:gap-3">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider font-khmer" id="filter-label">Filter Major:</span>
+        <div class="flex flex-wrap gap-1.5" id="major-pills">
+          <button onclick="setMajorFilter('all')" data-major="all" class="major-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-white">All Fields</button>
+          <button onclick="setMajorFilter('tech')" data-major="tech" class="major-pill px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Tech & IT</button>
+          <button onclick="setMajorFilter('business')" data-major="business" class="major-pill px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Business & Banking</button>
+          <button onclick="setMajorFilter('engineering')" data-major="engineering" class="major-pill px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Engineering & TVET</button>
+          <button onclick="setMajorFilter('health')" data-major="health" class="major-pill px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Health Sciences</button>
+          <button onclick="setMajorFilter('language')" data-major="language" class="major-pill px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Languages & Arts</button>
+          <button onclick="setMajorFilter('law')" data-major="law" class="major-pill px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">Law & Governance</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Filter Counter -->
+    <div class="flex justify-between items-center mb-6">
+      <div class="text-sm text-slate-600 font-medium">
+        <span id="results-count" class="font-bold text-slate-900">0</span> <span id="results-text">institutions found</span>
+      </div>
+    </div>
+
+    <!-- CONTAINER FOR UNIVERSITIES LIST -->
+    <div id="university-display" class="w-full">
+      <!-- Generated via JS -->
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-8 mt-12 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p>© 2026 Cambodia University Directory & Admission Portal. Compiled for students, scholarship applicants, and educators.</p>
+      <p class="font-khmer text-slate-400">ផ្ដល់ជូននូវព័ត៌មានលម្អិតអំពីទំនាក់ទំនង តម្លៃសិក្សា អាហារូបករណ៍ និងតំណភ្ជាប់ផ្លូវការទៅកាន់សាកលវិទ្យាល័យនីមួយៗ</p>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC & EXPANDED DATA SET -->
+  <script>
+    const universities = [
+      // 1. RUPP
+      {
+        id: "rupp",
+        nameEn: "Royal University of Phnom Penh (RUPP)",
+        nameKh: "សាកលវិទ្យាល័យភូមិន្ទភ្នំពេញ",
+        shortName: "RUPP / ស.ភ.ភ",
+        locationEn: "Russian Federation Blvd, Tuol Kork, Phnom Penh",
+        locationKh: "មហាវិថីសហព័ន្ធរុស្ស៊ី ខណ្ឌទួលគោក រាជធានីភ្នំពេញ",
+        tuitionEn: "$500 – $900 / year",
+        tuitionKh: "$៥០០ – $៩០០ / ឆ្នាំ",
+        tuitionValue: 700,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "MoEYS state scholarship (100% full coverage for top BACII grades) + Exchange programs.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋ ១០០% តាមរយៈលទ្ធផលបាក់ឌុប និងអាហារូបករណ៍ផ្លាស់ប្តូរការសិក្សាអន្តរជាតិ។",
+        hasDirectFee: true,
+        directDetailsEn: "Subsidized standard rate per academic year for self-paying students.",
+        directDetailsKh: "តម្លៃសិក្សាសមរម្យប្រចាំឆ្នាំសម្រាប់និស្សិតបង់ថ្លៃទូទៅ។",
+        branches: ["tech", "language", "business", "law"],
+        majors: [
+          { en: "Computer Science & IT", kh: "វិទ្យាសាស្ត្រកុំព្យូទ័រ និង IT", branch: "tech" },
+          { en: "Foreign Languages (IFL)", kh: "វិទ្យាស្ថានភាសាបរទេស (IFL)", branch: "language" },
+          { en: "Economic Development", kh: "សេដ្ឋកិច្ចអភិវឌ្ឍន៍", branch: "business" },
+          { en: "International Studies (DIS)", kh: "សិក្សាអន្តរជាតិ", branch: "law" }
+        ],
+        badge: "Public State University",
+        website: "https://www.rupp.edu.kh",
+        phone: "+855 23 883 640",
+        email: "info@rupp.edu.kh"
+      },
+      // 2. ITC
+      {
+        id: "itc",
+        nameEn: "Institute of Technology of Cambodia (ITC / Techno)",
+        nameKh: "វិទ្យាស្ថានបច្ចេកវិទ្យាកម្ពុជា (តិចណូ)",
+        shortName: "ITC / Techno",
+        locationEn: "Russian Federation Blvd, Phnom Penh",
+        locationKh: "មហាវិថីសហព័ន្ធរុស្ស៊ី រាជធានីភ្នំពេញ",
+        tuitionEn: "$600 – $1,000 / year",
+        tuitionKh: "$៦០០ – $១,០០០ / ឆ្នាំ",
+        tuitionValue: 800,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "MoEYS state scholarships via national entrance exam (Tronc Commun), French Embassy partnerships.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋតាមរយៈការប្រឡងចូលថ្នាក់ត្រៀមវិស្វកម្ម (Tronc Commun) និងដៃគូបារាំង។",
+        hasDirectFee: true,
+        directDetailsEn: "Fee-paying admission for qualifiers on reserve examination list.",
+        directDetailsKh: "កូតាបង់ថ្លៃសម្រាប់សិស្សដែលប្រឡងជាប់ក្នុងកម្រិតពិន្ទុបង់ថ្លៃ។",
+        branches: ["engineering", "tech"],
+        majors: [
+          { en: "Civil Engineering", kh: "វិស្វកម្មសំណង់ស៊ីវិល", branch: "engineering" },
+          { en: "Electrical & Energy Eng.", kh: "វិស្វកម្មអគ្គិសនី និងថាមពល", branch: "engineering" },
+          { en: "Software & Telecom Eng.", kh: "វិស្វកម្មទូរគមនាគមន៍ និងបណ្តាញ", branch: "tech" },
+          { en: "Food Tech & Chemical", kh: "បច្ចេកវិទ្យាអាហារ និងគីមី", branch: "engineering" }
+        ],
+        badge: "Top Engineering Institute",
+        website: "https://www.itc.edu.kh",
+        phone: "+855 23 880 370",
+        email: "info@itc.edu.kh"
+      },
+      // 3. CADT
+      {
+        id: "cadt",
+        nameEn: "Cambodia Academy of Digital Technology (CADT)",
+        nameKh: "បណ្ឌិត្យសភាបច្ចេកវិទ្យាឌីជីថលកម្ពុជា",
+        shortName: "CADT / IDRI",
+        locationEn: "National Road 6A, Prek Leap, Phnom Penh",
+        locationKh: "ផ្លូវជាតិលេខ ៦A ព្រែកលៀប ជ្រោយចង្វារ រាជធានីភ្នំពេញ",
+        tuitionEn: "$1,200 – $1,500 / year",
+        tuitionKh: "$១,២០០ – $១,៥០០ / ឆ្នាំ",
+        tuitionValue: 1350,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Techo Digital Talent Scholarship: 100% tuition + monthly stipend for top STEM students.",
+        scholarshipDetailsKh: "អាហារូបករណ៍ទេពកោសល្យឌីជីថលតេជោ៖ ឧបត្ថម្ភថ្លៃសិក្សា ១០០% ព្រមទាំងប្រាក់ខែប្រចាំខែ។",
+        hasDirectFee: true,
+        directDetailsEn: "Regular tuition fee admission for digital tech entrance exam passers.",
+        directDetailsKh: "ទទួលចុះឈ្មោះចូលរៀនបង់ថ្លៃសម្រាប់សិស្សដែលប្រឡងជាប់តេស្តសមត្ថភាព។",
+        branches: ["tech"],
+        majors: [
+          { en: "Software Engineering", kh: "វិស្វកម្មសូហ្វវែរ", branch: "tech" },
+          { en: "Cybersecurity", kh: "សន្តិសុខសាយប័រ", branch: "tech" },
+          { en: "Data Science & AI", kh: "វិទ្យាសាស្ត្រទិន្នន័យ និង AI", branch: "tech" },
+          { en: "E-Commerce", kh: "ពាណិជ្ជកម្មអេឡិចត្រូនិក", branch: "tech" }
+        ],
+        badge: "Digital Tech Flagship",
+        website: "https://www.cadt.edu.kh",
+        phone: "+855 15 228 158",
+        email: "pr@cadt.edu.kh"
+      },
+      // 4. NUM
+      {
+        id: "num",
+        nameEn: "National University of Management (NUM)",
+        nameKh: "សាកលវិទ្យាល័យជាតិគ្រប់គ្រង",
+        shortName: "NUM / ស.ជ.គ",
+        locationEn: "St 96, Wat Phnom, Daun Penh, Phnom Penh",
+        locationKh: "ផ្លូវលេខ ៩៦ សង្កាត់វត្តភ្នំ ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ",
+        tuitionEn: "$450 – $800 / year",
+        tuitionKh: "$៤៥០ – $៨០០ / ឆ្នាំ",
+        tuitionValue: 600,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "MoEYS national seats allocation and private merit scholarships.",
+        scholarshipDetailsKh: "កូតាអាហារូបករណ៍រដ្ឋរបស់ក្រសួងអប់រំ និងអាហារូបករណ៍ដៃគូឯកជន។",
+        hasDirectFee: true,
+        directDetailsEn: "Very economical tuition rates across daytime and evening business programs.",
+        directDetailsKh: "តម្លៃសិក្សាសមរម្យ និងសន្សំសំចៃខ្ពស់សម្រាប់វេនថ្ងៃ និងវេនយប់។",
+        branches: ["business", "law", "tech"],
+        majors: [
+          { en: "Accounting & Finance", kh: "គណនេយ្យ និងហិរញ្ញវត្ថុ", branch: "business" },
+          { en: "Business Administration", kh: "គ្រប់គ្រងពាណិជ្ជកម្ម", branch: "business" },
+          { en: "FinTech & Digital Economy", kh: "សេដ្ឋកិច្ចឌីជីថល និង FinTech", branch: "tech" },
+          { en: "Commercial Law", kh: "នីតិពាណិជ្ជកម្ម", branch: "law" }
+        ],
+        badge: "Leading Business State Uni",
+        website: "https://www.num.edu.kh",
+        phone: "+855 23 428 233",
+        email: "info@num.edu.kh"
+      },
+      // 5. RULE
+      {
+        id: "rule",
+        nameEn: "Royal University of Law and Economics (RULE)",
+        nameKh: "សាកលវិទ្យាល័យភូមិន្ទនីតិសាស្ត្រ និងវិទ្យាសាស្ត្រសេដ្ឋកិច្ច",
+        shortName: "RULE / ភូមិន្ទនីតិ",
+        locationEn: "Monivong Blvd, Boeung Keng Kang, Phnom Penh",
+        locationKh: "មហាវិថីព្រះមុនីវង្ស ខណ្ឌបឹងកេងកង រាជធានីភ្នំពេញ",
+        tuitionEn: "$500 – $850 / year",
+        tuitionKh: "$៥០០ – $៨៥០ / ឆ្នាំ",
+        tuitionValue: 650,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "State scholarships for Law and Economics + French Dual Degree scholarships (Erasmus+).",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋផ្នែកច្បាប់-សេដ្ឋកិច្ច និងអាហារូបករណ៍កម្មវិធីសញ្ញាបត្រពីរភាសាបារាំង។",
+        hasDirectFee: true,
+        directDetailsEn: "Direct enrollment in national and English/French international curriculums.",
+        directDetailsKh: "ការចុះឈ្មោះចូលរៀនបង់ថ្លៃសម្រាប់កម្មវិធីជាតិ និងអន្តរជាតិ។",
+        branches: ["law", "business"],
+        majors: [
+          { en: "Public & Private Law", kh: "នីតិសាធារណៈ និងឯកជន", branch: "law" },
+          { en: "Banking and Finance", kh: "ធនាគារ និងហិរញ្ញវត្ថុ", branch: "business" },
+          { en: "International Relations", kh: "ទំនាក់ទំនងអន្តរជាតិ", branch: "law" },
+          { en: "Economics & Management", kh: "វិទ្យាសាស្ត្រសេដ្ឋកិច្ច", branch: "business" }
+        ],
+        badge: "Top Law Faculty",
+        website: "https://rule.edu.kh",
+        phone: "+855 23 216 674",
+        email: "contact@rule.edu.kh"
+      },
+      // 6. UHS
+      {
+        id: "uhs",
+        nameEn: "University of Health Sciences (UHS)",
+        nameKh: "សាកលវិទ្យាល័យវិទ្យាសាស្ត្រសុខាភិបាល (ពេទ្យធំ)",
+        shortName: "UHS / ពេទ្យធំ",
+        locationEn: "Monivong Blvd, Phnom Penh",
+        locationKh: "មហាវិថីព្រះមុនីវង្ស រាជធានីភ្នំពេញ",
+        tuitionEn: "$1,800 – $3,500 / year",
+        tuitionKh: "$១,៨០០ – $៣,៥០០ / ឆ្នាំ",
+        tuitionValue: 2500,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Ministry of Health national exam top scorers receive 100% full state scholarship.",
+        scholarshipDetailsKh: "ការប្រឡងជ្រើសរើសនិស្សិតអាហារូបករណ៍រដ្ឋ ១០០% តាមរយៈការប្រឡងថ្នាក់ជាតិនៃក្រសួងសុខាភិបាល។",
+        hasDirectFee: true,
+        directDetailsEn: "Self-paying quotas for qualified students on the reserve examination tier.",
+        directDetailsKh: "កូតាបង់ថ្លៃសិក្សាសម្រាប់បេក្ខជនដែលប្រឡងជាប់ក្នុងកម្រិតពិន្ទុបង់ថ្លៃ។",
+        branches: ["health"],
+        majors: [
+          { en: "General Medicine (MD)", kh: "វេជ្ជសាស្ត្រទូទៅ (វេជ្ជបណ្ឌិត)", branch: "health" },
+          { en: "Pharmacy", kh: "ឱសថសាស្ត្រ", branch: "health" },
+          { en: "Dentistry (DDS)", kh: "ទន្តវទនសាស្រ្ត (ពេទ្យធ្មេញ)", branch: "health" },
+          { en: "Nursing & Midwifery", kh: "គិលានុបដ្ឋាក និងឆ្មប", branch: "health" }
+        ],
+        badge: "Premier Medical University",
+        website: "https://www.uhs.edu.kh",
+        phone: "+855 23 430 559",
+        email: "info@uhs.edu.kh"
+      },
+      // 7. AUPP
+      {
+        id: "aupp",
+        nameEn: "American University of Phnom Penh (AUPP)",
+        nameKh: "សាកលវិទ្យាល័យអាមេរិកាំងភ្នំពេញ",
+        shortName: "AUPP",
+        locationEn: "Russey Keo, Phnom Penh",
+        locationKh: "ខណ្ឌឫស្សីកែវ រាជធានីភ្នំពេញ",
+        tuitionEn: "$9,000 – $15,000 / year",
+        tuitionKh: "$៩,០០០ – $១៥,០០០ / ឆ្នាំ",
+        tuitionValue: 12000,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Merit scholarships (up to 100%) via competitive annual entrance testing.",
+        scholarshipDetailsKh: "អាហារូបករណ៍ទេពកោសល្យ (រហូតដល់ ១០០%) តាមរយៈការប្រឡងប្រជែងអាហារូបករណ៍ប្រចាំឆ្នាំ។",
+        hasDirectFee: true,
+        directDetailsEn: "US-accredited Dual Degree programs with University of Arizona & Fort Hays State.",
+        directDetailsKh: "កម្មវិធីសិក្សាសញ្ញាបត្រពីរទទួលស្គាល់ដោយសហរដ្ឋអាមេរិក (Arizona / Fort Hays)។",
+        branches: ["tech", "business", "law"],
+        majors: [
+          { en: "Software Development", kh: "ការអភិវឌ្ឍសូហ្វវែរ", branch: "tech" },
+          { en: "Business Administration", kh: "គ្រប់គ្រងពាណិជ្ជកម្ម", branch: "business" },
+          { en: "Cybersecurity & Cloud", kh: "សន្តិសុខក្លោដ និងប្រព័ន្ធ", branch: "tech" },
+          { en: "Law & Global Affairs", kh: "ច្បាប់ និងកិច្ចការសកលលោក", branch: "law" }
+        ],
+        badge: "US Dual Degree",
+        website: "https://www.aupp.edu.kh",
+        phone: "+855 23 990 023",
+        email: "admissions@aupp.edu.kh"
+      },
+      // 8. PARAGON
+      {
+        id: "paragon",
+        nameEn: "Paragon International University",
+        nameKh: "សាកលវិទ្យាល័យអន្តរជាតិ ផារ៉ាហ្គន",
+        shortName: "Paragon.U",
+        locationEn: "Toul Kork, Phnom Penh",
+        locationKh: "ខណ្ឌទួលគោក រាជធានីភ្នំពេញ",
+        tuitionEn: "$2,600 – $4,200 / year",
+        tuitionKh: "$២,៦០០ – $៤,២០០ / ឆ្នាំ",
+        tuitionValue: 3200,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Paragon annual exam covers 25% to 100% of 4-year tuition fees.",
+        scholarshipDetailsKh: "ការប្រឡងអាហារូបករណ៍ប្រចាំឆ្នាំផ្ដល់ជូនពី ២៥% ដល់ ១០០% សម្រាប់ ៤ ឆ្នាំពេញ។",
+        hasDirectFee: true,
+        directDetailsEn: "All programs taught 100% in English by international faculty.",
+        directDetailsKh: "កម្មវិធីសិក្សាជាភាសាអង់គ្លេស ១០០% បង្រៀនដោយសាស្រ្តាចារ្យអន្តរជាតិ។",
+        branches: ["tech", "engineering", "business"],
+        majors: [
+          { en: "Computer Science", kh: "វិទ្យាសាស្ត្រកុំព្យូទ័រ", branch: "tech" },
+          { en: "Civil & Architectural Eng.", kh: "វិស្វកម្មសំណង់ និងស្ថាបត្យកម្ម", branch: "engineering" },
+          { en: "MIS & International Trade", kh: "ប្រព័ន្ធព័ត៌មាន និងពាណិជ្ជកម្ម", branch: "business" }
+        ],
+        badge: "English International",
+        website: "https://paragoniu.edu.kh",
+        phone: "+855 23 996 111",
+        email: "info@paragoniu.edu.kh"
+      },
+      // 9. NIA PREK LEAP
+      {
+        id: "nia",
+        nameEn: "National Institute of Agriculture (Prek Leap)",
+        nameKh: "វិទ្យាស្ថានជាតិកសិកម្មព្រែកលៀប",
+        shortName: "NIA / ព្រែកលៀប",
+        locationEn: "Chroy Changvar, Phnom Penh",
+        locationKh: "ជ្រោយចង្វារ រាជធានីភ្នំពេញ",
+        tuitionEn: "$400 – $700 / year",
+        tuitionKh: "$៤០០ – $៧០០ / ឆ្នាំ",
+        tuitionValue: 550,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Ministry of Agriculture priority scholarships (100% free tuition).",
+        scholarshipDetailsKh: "អាហារូបករណ៍អាទិភាពរដ្ឋាភិបាល និងក្រសួងកសិកម្ម ១០០% ឥតគិតថ្លៃ។",
+        hasDirectFee: true,
+        directDetailsEn: "Highly affordable public fees with extensive practical farm facilities.",
+        directDetailsKh: "តម្លៃសិក្សាទាបសមរម្យ អមដោយការអនុវត្តផ្ទាល់នៅកសិដ្ឋានស្រាវជ្រាវ។",
+        branches: ["engineering", "health"],
+        majors: [
+          { en: "Agronomy & Crop Science", kh: "កសិសាស្ត្រ និងដំណាំ", branch: "engineering" },
+          { en: "Veterinary Medicine", kh: "បសុព្យាបាល (ពេទ្យសត្វ)", branch: "health" },
+          { en: "Agro-Industry", kh: "កសិ-ឧស្សាហកម្ម", branch: "engineering" }
+        ],
+        badge: "Public Agricultural College",
+        website: "https://nia.edu.kh",
+        phone: "+855 23 430 081",
+        email: "info@nia.edu.kh"
+      },
+      // 10. BELTEI
+      {
+        id: "beltei",
+        nameEn: "BELTEI International University",
+        nameKh: "សាកលវិទ្យាល័យ ប៊ែលធី អន្តរជាតិ",
+        shortName: "BELTEI / ប៊ែលធី",
+        locationEn: "Tuol Sleng Campus / Chom Chao Campus, Phnom Penh",
+        locationKh: "សាខាទួលស្លែង / សាខាចោមចៅ រាជធានីភ្នំពេញ",
+        tuitionEn: "$650 – $1,200 / year",
+        tuitionKh: "$៦៥០ – $១,២០០ / ឆ្នាំ",
+        tuitionValue: 900,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Grade A/B BACII scholarships (30% to 100%) and annual merit discounts.",
+        scholarshipDetailsKh: "អាហារូបករណ៍និទ្ទេស A/B បាក់ឌុប (៣០% ដល់ ១០០%) និងអាហារូបករណ៍លើកទឹកចិត្ត។",
+        hasDirectFee: true,
+        directDetailsEn: "National and International dual curriculums with flexible morning/evening shifts.",
+        directDetailsKh: "កម្មវិធីជាតិ និងអន្តរជាតិជាមួយនឹងជម្រើសវេនសិក្សាបត់បែន។",
+        branches: ["business", "language", "law", "tech", "engineering"],
+        majors: [
+          { en: "English & TESOL", kh: "ភាសាអង់គ្លេស និងគរុកោសល្យ", branch: "language" },
+          { en: "Business Admin & Banking", kh: "គ្រប់គ្រងពាណិជ្ជកម្ម និងធនាគារ", branch: "business" },
+          { en: "International Law", kh: "នីតិអន្តរជាតិ", branch: "law" },
+          { en: "IT & Civil Engineering", kh: "វិស្វកម្មសំណង់ និង IT", branch: "engineering" }
+        ],
+        badge: "Private Multi-Campus Uni",
+        website: "https://www.beltei.edu.kh",
+        phone: "+855 23 999 967",
+        email: "info@beltei.edu.kh"
+      },
+      // 11. IU
+      {
+        id: "iu",
+        nameEn: "International University (IU)",
+        nameKh: "សាកលវិទ្យាល័យ អន្តរជាតិ",
+        shortName: "IU / អន្តរជាតិ",
+        locationEn: "St 1986, Sen Sok, Phnom Penh",
+        locationKh: "ផ្លូវ ១៩៨៦ សែនសុខ រាជធានីភ្នំពេញ",
+        tuitionEn: "$1,500 – $3,500 / year",
+        tuitionKh: "$១,៥០០ – $៣,៥០០ / ឆ្នាំ",
+        tuitionValue: 2400,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Entrance exam merit discounts and high school honor grants in healthcare.",
+        scholarshipDetailsKh: "អាហារូបករណ៍លើកទឹកចិត្តតាមការប្រឡងចូល និងនិទ្ទេសសិស្សឆ្នើមផ្នែកសុខាភិបាល។",
+        hasDirectFee: true,
+        directDetailsEn: "Direct pay for Medicine, Pharmacy, Dentistry, and Biotechnology programs.",
+        directDetailsKh: "ការបង់ថ្លៃសិក្សាផ្ទាល់សម្រាប់ជំនាញវេជ្ជសាស្ត្រ ឱសថសាស្ត្រ និងទន្តសាស្ត្រ។",
+        branches: ["health", "tech"],
+        majors: [
+          { en: "Medicine & Surgery", kh: "វេជ្ជសាស្ត្រ និងវះកាត់", branch: "health" },
+          { en: "Pharmacy & Dentistry", kh: "ឱសថសាស្ត្រ និងទន្តសាស្ត្រ", branch: "health" },
+          { en: "Biomedical & Biotech", kh: "ជីវវេជ្ជសាស្ត្រ និងជីវបច្ចេកវិទ្យា", branch: "health" }
+        ],
+        badge: "Premier Private Health Sciences",
+        website: "https://iu.edu.kh",
+        phone: "+855 23 881 668",
+        email: "info@iu.edu.kh"
+      },
+      // 12. UP
+      {
+        id: "up",
+        nameEn: "University of Puthisastra (UP)",
+        nameKh: "សាកលវិទ្យាល័យ ពុទ្ធិសាស្ត្រ",
+        shortName: "UP / ពុទ្ធិសាស្ត្រ",
+        locationEn: "St 180 & 184, Boeung Raing, Daun Penh, Phnom Penh",
+        locationKh: "សង្កាត់បឹងរាំង ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ",
+        tuitionEn: "$1,800 – $4,500 / year",
+        tuitionKh: "$១,៨០០ – $៤,៥០០ / ឆ្នាំ",
+        tuitionValue: 2800,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Up to 100% Puthisastra Merit and STEM/Health exam scholarships.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រហូតដល់ ១០០% សម្រាប់សិស្សពូកែ និងការប្រឡងអាហារូបករណ៍សុខាភិបាល-IT។",
+        hasDirectFee: true,
+        directDetailsEn: "Internationally standard dental hospital and clinical training facilities.",
+        directDetailsKh: "ការបណ្តុះបណ្តាលអនុវត្តផ្ទាល់ជាមួយមន្ទីរពេទ្យធ្មេញ និងមន្ទីរពិសោធន៍ទំនើប។",
+        branches: ["health", "tech"],
+        majors: [
+          { en: "Dentistry & Medicine", kh: "ទន្តវទនសាស្រ្ត និងវេជ្ជសាស្ត្រ", branch: "health" },
+          { en: "Pharmacy & Nursing", kh: "ឱសថសាស្ត្រ និងគិលានុបដ្ឋាក", branch: "health" },
+          { en: "Information Technology", kh: "បច្ចេកវិទ្យាព័ត៌មាន (IT)", branch: "tech" }
+        ],
+        badge: "Leading Health & STEM Uni",
+        website: "https://www.up.edu.kh",
+        phone: "+855 23 994 483",
+        email: "info@up.edu.kh"
+      },
+      // 13. RUFA
+      {
+        id: "rufa",
+        nameEn: "Royal University of Fine Arts (RUFA)",
+        nameKh: "សាកលវិទ្យាល័យភូមិន្ទវិចិត្រសិល្បៈ",
+        shortName: "RUFA / វិចិត្រសិល្បៈ",
+        locationEn: "St 19, Chey Chumneah, Daun Penh, Phnom Penh",
+        locationKh: "ផ្លូវលេខ ១៩ សង្កាត់ជ័យជំនះ ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ",
+        tuitionEn: "$450 – $750 / year",
+        tuitionKh: "$៤៥០ – $៧៥០ / ឆ្នាំ",
+        tuitionValue: 600,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Ministry of Culture and Fine Arts government scholarship allocations.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋ ១០០% របស់ក្រសួងវប្បធម៌ និងវិចិត្រសិល្បៈ។",
+        hasDirectFee: true,
+        directDetailsEn: "Public fee structure for Architecture, Archaeology, and Fine Arts.",
+        directDetailsKh: "តម្លៃសិក្សាកម្រិតសាធារណៈសម្រាប់ស្ថាបត្យកម្ម បុរាណវិទ្យា និងគំនូរ។",
+        branches: ["engineering", "language"],
+        majors: [
+          { en: "Architecture & Urbanism", kh: "ស្ថាបត្យកម្ម និងនគរូបនីយវិទ្យា", branch: "engineering" },
+          { en: "Archaeology", kh: "បុរាណវិទ្យា", branch: "language" },
+          { en: "Visual Arts & Sculpture", kh: "វិចិត្រកម្ម និងចម្លាក់", branch: "language" }
+        ],
+        badge: "Heritage & Fine Arts",
+        website: "https://www.rufa.edu.kh",
+        phone: "+855 23 211 409",
+        email: "info@rufa.edu.kh"
+      },
+      // 14. WESTERN
+      {
+        id: "western",
+        nameEn: "Western University (WU)",
+        nameKh: "សាកលវិទ្យាល័យ វេសថើន",
+        shortName: "Western / WU",
+        locationEn: "St 608, Boeung Kak II, Tuol Kork, Phnom Penh",
+        locationKh: "ផ្លូវ ៦០៨ បឹងកក់២ ខណ្ឌទួលគោក រាជធានីភ្នំពេញ",
+        tuitionEn: "$500 – $850 / year",
+        tuitionKh: "$៥០០ – $៨៥០ / ឆ្នាំ",
+        tuitionValue: 650,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "BACII high achiever discounts (20% to 100%) and regional partner grants.",
+        scholarshipDetailsKh: "អាហារូបករណ៍ផ្អែកលើនិទ្ទេសបាក់ឌុប (២០% ដល់ ១០០%) និងកូតាដៃគូ។",
+        hasDirectFee: true,
+        directDetailsEn: "Affordable business, English, and social science degrees.",
+        directDetailsKh: "តម្លៃសិក្សាសមរម្យសម្រាប់ការគ្រប់គ្រង ភាសាអង់គ្លេស និងវិទ្យាសាស្ត្រសង្គម។",
+        branches: ["business", "language", "law", "tech"],
+        majors: [
+          { en: "Teaching English (TEFL)", kh: "គរុកោសល្យភាសាអង់គ្លេស (TEFL)", branch: "language" },
+          { en: "Accounting & Management", kh: "គណនេយ្យ និងការគ្រប់គ្រង", branch: "business" },
+          { en: "Law & Public Admin", kh: "នីតិសាស្ត្រ និងរដ្ឋបាលសាធារណៈ", branch: "law" }
+        ],
+        badge: "Accessible Private Uni",
+        website: "https://www.western.edu.kh",
+        phone: "+855 23 990 045",
+        email: "info@western.edu.kh"
+      },
+      // 15. NORTON
+      {
+        id: "norton",
+        nameEn: "Norton University (NU)",
+        nameKh: "សាកលវិទ្យាល័យ ណ័រតុន",
+        shortName: "Norton / NU",
+        locationEn: "St. Keo Chenda, Chroy Changvar, Phnom Penh",
+        locationKh: "ផ្លូវកែវចិន្តា ជ្រោយចង្វារ រាជធានីភ្នំពេញ",
+        tuitionEn: "$750 – $1,400 / year",
+        tuitionKh: "$៧៥០ – $១,៤០០ / ឆ្នាំ",
+        tuitionValue: 1000,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Merit examination discounts (25%-100%) and Samdech Hun Sen scholarships.",
+        scholarshipDetailsKh: "អាហារូបករណ៍ប្រឡងប្រជែង (២៥%-១០០%) និងអាហារូបករណ៍សម្តេចតេជោ។",
+        hasDirectFee: true,
+        directDetailsEn: "Pioneering private university with robust Civil Engineering, Architecture & IT wings.",
+        directDetailsKh: "សាកលវិទ្យាល័យឯកជនដំបូងគេបង្អស់ដែលមានភាពលេចធ្លោលើវិស្វកម្មសំណង់ និង IT។",
+        branches: ["engineering", "tech", "business", "health"],
+        majors: [
+          { en: "Civil Engineering & Architecture", kh: "វិស្វកម្មសំណង់ស៊ីវិល និងស្ថាបត្យកម្ម", branch: "engineering" },
+          { en: "Computer Studies & CS", kh: "វិទ្យាសាស្ត្រកុំព្យូទ័រ", branch: "tech" },
+          { en: "Pharmacy", kh: "ឱសថសាស្ត្រ", branch: "health" },
+          { en: "Business Administration", kh: "គ្រប់គ្រងពាណិជ្ជកម្ម", branch: "business" }
+        ],
+        badge: "Pioneer Private Uni",
+        website: "https://www.norton-u.com",
+        phone: "+855 23 432 075",
+        email: "info@norton-u.com"
+      },
+      // 16. ACLEDA AIB
+      {
+        id: "acleda",
+        nameEn: "ACLEDA Institute of Business (AIB)",
+        nameKh: "វិទ្យាស្ថាន ពាណិជ្ជសាស្ត្រ អេស៊ីលីដា",
+        shortName: "AIB / អេស៊ីលីដា",
+        locationEn: "Sen Sok, Phnom Penh",
+        locationKh: "ខណ្ឌសែនសុខ រាជធានីភ្នំពេញ",
+        tuitionEn: "$1,200 – $2,000 / year",
+        tuitionKh: "$១,២០០ – $២,០០០ / ឆ្នាំ",
+        tuitionValue: 1500,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "ACLEDA Bank outstanding candidate scholarships + job placement guarantees.",
+        scholarshipDetailsKh: "អាហារូបករណ៍ធនាគារអេស៊ីលីដាសម្រាប់សិស្សពូកែ និងធានាឱកាសការងារ។",
+        hasDirectFee: true,
+        directDetailsEn: "Direct enrollment in premier Banking, FinTech, and Risk Management training.",
+        directDetailsKh: "ការបង់ថ្លៃសិក្សាសម្រាប់ជំនាញធនាគារ ហិរញ្ញវត្ថុ និងបច្ចេកវិទ្យាហិរញ្ញវត្ថុ FinTech។",
+        branches: ["business", "tech"],
+        majors: [
+          { en: "Banking & Finance", kh: "ធនាគារ និងហិរញ្ញវត្ថុ", branch: "business" },
+          { en: "Financial Technology (FinTech)", kh: "បច្ចេកវិទ្យាហិរញ្ញវត្ថុ (FinTech)", branch: "tech" },
+          { en: "International Business", kh: "ធុរកិច្ចអន្តរជាតិ", branch: "business" }
+        ],
+        badge: "Premier Banking Institute",
+        website: "https://www.aib.edu.kh",
+        phone: "+855 23 999 900",
+        email: "info@aib.edu.kh"
+      },
+      // 17. RCAF / NDU
+      {
+        id: "rcaf",
+        nameEn: "National Defense University (NDU / RCAF)",
+        nameKh: "សាកលវិទ្យាល័យការពារជាតិ (កងយោធពលខេមរភូមិន្ទ)",
+        shortName: "NDU / RCAF / ស.ក.ជ",
+        locationEn: "Khan Sen Sok / Chom Chao, Phnom Penh",
+        locationKh: "ខណ្ឌសែនសុខ / ចោមចៅ រាជធានីភ្នំពេញ",
+        tuitionEn: "Free (Gov Subsidy) / $500",
+        tuitionKh: "ឥតគិតថ្លៃ (កូតារដ្ឋ) / $៥០០",
+        tuitionValue: 400,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "100% full military scholarship via Ministry of National Defense recruitment exams.",
+        scholarshipDetailsKh: "អាហារូបករណ៍យោធាពេញលេញ ១០០% តាមរយៈការប្រឡងជ្រើសរើសរបស់ក្រសួងការពារជាតិ។",
+        hasDirectFee: true,
+        directDetailsEn: "Civilian undergraduate degree quotas in strategic studies and leadership.",
+        directDetailsKh: "កូតាសិក្សាសម្រាប់និស្សិតស៊ីវិលផ្នែកយុទ្ធសាស្ត្រ នីតិសាស្ត្រ និងការគ្រប់គ្រង។",
+        branches: ["law", "tech"],
+        majors: [
+          { en: "Military Science & Strategy", kh: "វិទ្យាសាស្ត្រយោធា និងយុទ្ធសាស្ត្រ", branch: "law" },
+          { en: "Military Engineering & Tech", kh: "វិស្វកម្មយោធា និងបច្ចេកវិទ្យា", branch: "tech" },
+          { en: "Command & International Relations", kh: "បញ្ជាការដ្ឋាន និងទំនាក់ទំនងអន្តរជាតិ", branch: "law" }
+        ],
+        badge: "Military & National Defense",
+        website: "https://ndu.edu.kh",
+        phone: "+855 23 880 912",
+        email: "contact@ndu.edu.kh"
+      },
+      // 18. CAMED
+      {
+        id: "camed",
+        nameEn: "CamEd Business School",
+        nameKh: "សាលាពាណិជ្ជសាស្ត្រ ខេមអែដ",
+        shortName: "CamEd / ខេមអែដ",
+        locationEn: "St 108, Wat Phnom, Daun Penh, Phnom Penh",
+        locationKh: "ផ្លូវលេខ ១០៨ វត្តភ្នំ ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ",
+        tuitionEn: "$3,200 – $4,800 / year",
+        tuitionKh: "$៣,២០០ – $៤,៨០០ / ឆ្នាំ",
+        tuitionValue: 4000,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "CamEd Merit Scholarships (50% to 100%) for BACII Grade A/B achievers.",
+        scholarshipDetailsKh: "អាហារូបករណ៍សិស្សឆ្នើម (៥០% ដល់ ១០០%) ផ្អែកលើនិទ្ទេសបាក់ឌុប និងការប្រឡង។",
+        hasDirectFee: true,
+        directDetailsEn: "Accredited CAT & ACCA UK qualification embedded into the bachelor's degree.",
+        directDetailsKh: "កម្មវិធីបរិញ្ញាបត្រគណនេយ្យអមដោយសញ្ញាបត្រអន្តរជាតិ ACCA ចក្រភពអង់គ្លេស។",
+        branches: ["business"],
+        majors: [
+          { en: "Accounting & Finance (ACCA)", kh: "គណនេយ្យ និងហិរញ្ញវត្ថុ (ACCA)", branch: "business" },
+          { en: "Audit and Taxation", kh: "សវនកម្ម និងពន្ធដារ", branch: "business" }
+        ],
+        badge: "ACCA Accredited Platinum",
+        website: "https://www.cam-ed.com",
+        phone: "+855 23 986 522",
+        email: "reception@cam-ed.com"
+      },
+      // 19. RAFFLES
+      {
+        id: "raffles",
+        nameEn: "Raffles International College Phnom Penh",
+        nameKh: "មហាវិទ្យាល័យអន្តរជាតិ រ៉ាហ្វល ភ្នំពេញ",
+        shortName: "Raffles",
+        locationEn: "St 310, Boeung Keng Kang 1, Phnom Penh",
+        locationKh: "ផ្លូវ ៣១០ បឹងកេងកង១ រាជធានីភ្នំពេញ",
+        tuitionEn: "$5,500 – $8,500 / year",
+        tuitionKh: "$៥,៥០០ – $៨,៥០០ / ឆ្នាំ",
+        tuitionValue: 7000,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Design & Creative Portfolio scholarships (up to 50% discount).",
+        scholarshipDetailsKh: "អាហារូបករណ៍ផ្អែកលើស្នាដៃរចនា Portfolio (រហូតដល់ ៥០%)។",
+        hasDirectFee: true,
+        directDetailsEn: "Singaporean international design curriculum with pathway transfers abroad.",
+        directDetailsKh: "កម្មវិធីរចនាម៉ូដកម្រិតអន្តរជាតិសិង្ហបុរី និងឱកាសផ្ទេរការសិក្សាទៅបរទេស។",
+        branches: ["engineering", "business"],
+        majors: [
+          { en: "Fashion & Graphic Design", kh: "រចនាម៉ូដ និងក្រាហ្វិកឌីហ្សាញ", branch: "engineering" },
+          { en: "Interior Design", kh: "ស្ថាបត្យកម្មផ្ទៃក្នុង (Interior)", branch: "engineering" },
+          { en: "Design Management", kh: "គ្រប់គ្រងផ្នែករចនា", branch: "business" }
+        ],
+        badge: "Design & Arts Institute",
+        website: "https://raffles.edu.kh",
+        phone: "+855 23 216 023",
+        email: "enquiry@raffles.edu.kh"
+      },
+      // 20. DE MONTFORT
+      {
+        id: "dmu",
+        nameEn: "De Montfort University Cambodia (DMU)",
+        nameKh: "សាកលវិទ្យាល័យ ដឺ ម៉ុងហ្វត កម្ពុជា",
+        shortName: "DMU Cambodia",
+        locationEn: "Koh Pich (Diamond Island), Phnom Penh",
+        locationKh: "កោះពេជ្រ រាជធានីភ្នំពេញ",
+        tuitionEn: "$6,000 – $9,500 / year",
+        tuitionKh: "$៦,០០០ – $៩,៥០០ / ឆ្នាំ",
+        tuitionValue: 7800,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Inaugural British Excellence scholarships (up to 50% tuition reduction).",
+        scholarshipDetailsKh: "អាហារូបករណ៍ឧត្តមភាពអង់គ្លេស (British Excellence) បញ្ចុះតម្លៃរហូតដល់ ៥០%។",
+        hasDirectFee: true,
+        directDetailsEn: "100% UK Degree awarded in Cambodia by the renowned British university.",
+        directDetailsKh: "ទទួលបានសញ្ញាបត្រចក្រភពអង់គ្លេស ១០០% ដោយផ្ទាល់នៅកម្ពុជា។",
+        branches: ["business", "tech"],
+        majors: [
+          { en: "Business Data Analytics", kh: "វិភាគទិន្នន័យធុរកិច្ច", branch: "tech" },
+          { en: "Accounting & Global Finance", kh: "គណនេយ្យ និងហិរញ្ញវត្ថុសកល", branch: "business" },
+          { en: "International Business", kh: "ពាណិជ្ជកម្មអន្តរជាតិ", branch: "business" }
+        ],
+        badge: "British University Campus",
+        website: "https://www.dmu.edu.kh",
+        phone: "+855 12 888 368",
+        email: "admissions@dmu.edu.kh"
+      },
+      // 21. UC
+      {
+        id: "uc",
+        nameEn: "The University of Cambodia (UC)",
+        nameKh: "សាកលវិទ្យាល័យ កម្ពុជា",
+        shortName: "UC / ស.ក",
+        locationEn: "Northbridge Road, Sen Sok, Phnom Penh",
+        locationKh: "ផ្លូវណតប្រ៊ីដ សែនសុខ រាជធានីភ្នំពេញ",
+        tuitionEn: "$800 – $1,500 / year",
+        tuitionKh: "$៨០០ – $១,៥០០ / ឆ្នាំ",
+        tuitionValue: 1100,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Samdech Techo Hun Sen and Visionary 100% scholarships via annual exam.",
+        scholarshipDetailsKh: "អាហារូបករណ៍ ១០០% សម្តេចតេជោ ហ៊ុន សែន តាមរយៈការប្រឡងប្រជែងប្រចាំឆ្នាំ។",
+        hasDirectFee: true,
+        directDetailsEn: "English-medium and Khmer-track degree programs across diverse faculties.",
+        directDetailsKh: "កម្មវិធីសិក្សាជាភាសាអង់គ្លេស និងភាសាខ្មែរគ្រប់មហាវិទ្យាល័យ។",
+        branches: ["law", "business", "tech", "language"],
+        majors: [
+          { en: "International Relations (TSSD)", kh: "ទំនាក់ទំនងអន្តរជាតិ", branch: "law" },
+          { en: "Business Management", kh: "គ្រប់គ្រងពាណិជ្ជកម្ម", branch: "business" },
+          { en: "IT & Media Communications", kh: "ព័ត៌មានវិទ្យា និងប្រព័ន្ធផ្សព្វផ្សាយ", branch: "tech" }
+        ],
+        badge: "Comprehensive Private Uni",
+        website: "https://www.uc.edu.kh",
+        phone: "+855 23 993 274",
+        email: "admissions@uc.edu.kh"
+      },
+      // 22. PPIU
+      {
+        id: "ppiu",
+        nameEn: "Phnom Penh International University (PPIU)",
+        nameKh: "សាកលវិទ្យាល័យភ្នំពេញអន្តរជាតិ",
+        shortName: "PPIU / ភ.ព.អ",
+        locationEn: "St 169, Veal Vong, 7 Makara, Phnom Penh",
+        locationKh: "ផ្លូវ ១៦៩ វាលវង់ ខណ្ឌ៧មករា រាជធានីភ្នំពេញ",
+        tuitionEn: "$500 – $900 / year",
+        tuitionKh: "$៥០០ – $៩០០ / ឆ្នាំ",
+        tuitionValue: 700,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "High school top grade discounts and female empowerment scholarships.",
+        scholarshipDetailsKh: "អាហារូបករណ៍លើកទឹកចិត្តសិស្សនិទ្ទេសល្អ និងអាហារូបករណ៍សម្រាប់សិស្សនារី។",
+        hasDirectFee: true,
+        directDetailsEn: "Flexible schedules (Morning, Afternoon, Evening, and Weekend sessions).",
+        directDetailsKh: "កាលវិភាគសិក្សាបត់បែន (វេនព្រឹក រសៀល យប់ និងចុងសប្តាហ៍)។",
+        branches: ["business", "law", "tech", "language"],
+        majors: [
+          { en: "Business & Accounting", kh: "ពាណិជ្ជកម្ម និងគណនេយ្យ", branch: "business" },
+          { en: "Law & Human Rights", kh: "នីតិសាស្ត្រ និងសិទ្ធិមនុស្ស", branch: "law" },
+          { en: "Computer Science", kh: "វិទ្យាសាស្ត្រកុំព្យូទ័រ", branch: "tech" }
+        ],
+        badge: "Central Phnom Penh Campus",
+        website: "https://www.ppiu.edu.kh",
+        phone: "+855 23 999 909",
+        email: "info@ppiu.edu.kh"
+      },
+      // 23. PUC
+      {
+        id: "puc",
+        nameEn: "Paññāsāstra University of Cambodia (PUC)",
+        nameKh: "សាកលវិទ្យាល័យ បញ្ញាសាស្ត្រ កម្ពុជា",
+        shortName: "PUC / បញ្ញាសាស្ត្រ",
+        locationEn: "Samdech Sothearos Blvd / Toul Kork, Phnom Penh",
+        locationKh: "មហាវិថីសម្ដេចសុធារស / ទួលគោក រាជធានីភ្នំពេញ",
+        tuitionEn: "$1,100 – $1,800 / year",
+        tuitionKh: "$១,១០០ – $១,៨០០ / ឆ្នាំ",
+        tuitionValue: 1400,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Academic excellence scholarships (25% - 75%) and leadership awards.",
+        scholarshipDetailsKh: "អាហារូបករណ៍និស្សិតឆ្នើម (២៥% - ៧៥%) និងពានរង្វាន់អ្នកដឹកនាំវ័យក្មេង។",
+        hasDirectFee: true,
+        directDetailsEn: "Pioneer in all-English university curriculum and Global Peace studies.",
+        directDetailsKh: "សាកលវិទ្យាល័យដែលបង្រៀនជាភាសាអង់គ្លេសសុទ្ធឈានមុខគេនៅកម្ពុជា។",
+        branches: ["language", "law", "business", "tech"],
+        majors: [
+          { en: "Teaching English & Linguistics", kh: "គរុកោសល្យភាសាអង់គ្លេស និងភាសាវិទ្យា", branch: "language" },
+          { en: "International Relations & Law", kh: "ទំនាក់ទំនងអន្តរជាតិ និងច្បាប់", branch: "law" },
+          { en: "Business Admin & Marketing", kh: "គ្រប់គ្រងពាណិជ្ជកម្ម និងទីផ្សារ", branch: "business" }
+        ],
+        badge: "All-English Curriculum",
+        website: "https://www.puc.edu.kh",
+        phone: "+855 23 990 153",
+        email: "info@puc.edu.kh"
+      },
+      // 24. UTE / NTTI
+      {
+        id: "ute",
+        nameEn: "National Technical Training Institute (NTTI / UTE)",
+        nameKh: "វិទ្យាស្ថានជាតិបណ្តុះបណ្តាលបច្ចេកទេស",
+        shortName: "NTTI / UTE",
+        locationEn: "Russian Blvd, Sen Sok, Phnom Penh",
+        locationKh: "មហាវិថីសហព័ន្ធរុស្ស៊ី សែនសុខ រាជធានីភ្នំពេញ",
+        tuitionEn: "$400 – $750 / year",
+        tuitionKh: "$៤០០ – $៧៥០ / ឆ្នាំ",
+        tuitionValue: 550,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "100% full TVET technical scholarships by Ministry of Labour and Vocational Training.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋ ១០០% របស់ក្រសួងការងារ និងបណ្តុះបណ្តាលវិជ្ជាជីវៈ។",
+        hasDirectFee: true,
+        directDetailsEn: "High-demand vocational engineering and vocational teacher degrees.",
+        directDetailsKh: "ថ្នាក់បណ្តុះបណ្តាលវិស្វករ និងគ្រូបច្ចេកទេសជំនាញកម្រិតជាតិ។",
+        branches: ["engineering", "tech"],
+        majors: [
+          { en: "Civil & Construction Eng.", kh: "វិស្វកម្មសំណង់ និងស្ថាបត្យកម្ម", branch: "engineering" },
+          { en: "Electrical & Automation", kh: "វិស្វកម្មអគ្គិសនី និងស្វ័យប្រវត្តិកម្ម", branch: "engineering" },
+          { en: "Computer & Electronics", kh: "បច្ចេកវិទ្យាកុំព្យូទ័រ និងអេឡិចត្រូនិក", branch: "tech" }
+        ],
+        badge: "Public TVET Institute",
+        website: "https://ntti.edu.kh",
+        phone: "+855 23 884 100",
+        email: "info@ntti.edu.kh"
+      },
+      // 25. NIE
+      {
+        id: "nie",
+        nameEn: "National Institute of Education (NIE)",
+        nameKh: "វិទ្យាស្ថានជាតិអប់រំ",
+        shortName: "NIE / វ.ជ.អ",
+        locationEn: "Preah Norodom Blvd, Daun Penh, Phnom Penh",
+        locationKh: "មហាវិថីព្រះនរោត្តម ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ",
+        tuitionEn: "Free (State Trainees) / $500",
+        tuitionKh: "ឥតគិតថ្លៃ (គរុសិស្សរដ្ឋ) / $៥០០",
+        tuitionValue: 500,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "100% government stipend for qualified upper-secondary school teacher trainees.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋ ១០០% និងប្រាក់ឧបត្ថម្ភសម្រាប់គរុសិស្សបណ្តុះបណ្តាលគ្រូវិទ្យាល័យ។",
+        hasDirectFee: true,
+        directDetailsEn: "Master's & Educational management certifications for private candidates.",
+        directDetailsKh: "វគ្គបណ្តុះបណ្តាលភាពជាអ្នកដឹកនាំអប់រំ និងបរិញ្ញាបត្រជាន់ខ្ពស់។",
+        branches: ["language", "law"],
+        majors: [
+          { en: "Educational Pedagogy & Training", kh: "គរុកោសល្យ និងវិធីសាស្ត្របង្រៀន", branch: "language" },
+          { en: "Educational Administration", kh: "រដ្ឋបាល និងការគ្រប់គ្រងអប់រំ", branch: "law" }
+        ],
+        badge: "National Teacher Academy",
+        website: "https://nie.edu.kh",
+        phone: "+855 23 217 644",
+        email: "info@nie.edu.kh"
+      },
+      // 26. BBU
+      {
+        id: "bbu",
+        nameEn: "Build Bright University (BBU)",
+        nameKh: "សាកលវិទ្យាល័យ បៀលប្រាយ",
+        shortName: "BBU / បៀលប្រាយ",
+        locationEn: "Samdech Sothearos Blvd, Phnom Penh & Provincial branches",
+        locationKh: "មហាវិថីសម្ដេចសុធារស ភ្នំពេញ និងសាខាតាមបណ្តាខេត្ត",
+        tuitionEn: "$450 – $800 / year",
+        tuitionKh: "$៤៥០ – $៨០០ / ឆ្នាំ",
+        tuitionValue: 600,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Grade B/C incentive grants and provincial community scholarships.",
+        scholarshipDetailsKh: "អាហារូបករណ៍លើកទឹកចិត្តសិស្សខេត្ត និងការបញ្ចុះតម្លៃសម្រាប់និទ្ទេសល្អ។",
+        hasDirectFee: true,
+        directDetailsEn: "One of Cambodia's largest university networks with campuses across many provinces.",
+        directDetailsKh: "បណ្តាញសាកលវិទ្យាល័យធំជាងគេមួយដែលមានសាខានៅស្ទើរគ្រប់ខេត្តក្រុង។",
+        branches: ["business", "law", "tech", "language"],
+        majors: [
+          { en: "Management & Marketing", kh: "គ្រប់គ្រង និងទីផ្សារ", branch: "business" },
+          { en: "Information Technology", kh: "បច្ចេកវិទ្យាព័ត៌មាន", branch: "tech" },
+          { en: "Law & Public Admin", kh: "នីតិសាស្ត្រ និងរដ្ឋបាល", branch: "law" }
+        ],
+        badge: "Nationwide Campus Network",
+        website: "https://bbu.edu.kh",
+        phone: "+855 23 994 777",
+        email: "info@bbu.edu.kh"
+      },
+      // 27. AEU
+      {
+        id: "aeu",
+        nameEn: "Asia Euro University (AEU)",
+        nameKh: "សាកលវិទ្យាល័យ អាស៊ី អឺរ៉ុប",
+        shortName: "AEU / អាស៊ីអឺរ៉ុប",
+        locationEn: "St 146, Teuk La-ak II, Tuol Kork, Phnom Penh",
+        locationKh: "ផ្លូវ ១៤៦ ទឹកល្អក់២ ទួលគោក រាជធានីភ្នំពេញ",
+        tuitionEn: "$450 – $800 / year",
+        tuitionKh: "$៤៥០ – $៨០០ / ឆ្នាំ",
+        tuitionValue: 600,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Generous tuition fee discounts for freshmen from provincial high schools.",
+        scholarshipDetailsKh: "អាហារូបករណ៍បញ្ចុះតម្លៃពិសេសសម្រាប់សិស្សមកពីបណ្តាខេត្ត។",
+        hasDirectFee: true,
+        directDetailsEn: "Affordable higher education with night and weekend shifts.",
+        directDetailsKh: "តម្លៃសិក្សាសមរម្យបំផុតសម្រាប់វេនយប់ និងចុងសប្តាហ៍។",
+        branches: ["business", "tech", "language", "law"],
+        majors: [
+          { en: "Accounting & Finance", kh: "គណនេយ្យ និងហិរញ្ញវត្ថុ", branch: "business" },
+          { en: "Computer Science", kh: "វិទ្យាសាស្ត្រកុំព្យូទ័រ", branch: "tech" },
+          { en: "Chinese & English Literature", kh: "អក្សរសាស្ត្រចិន និងអង់គ្លេស", branch: "language" }
+        ],
+        badge: "Accessible Higher Ed",
+        website: "https://aeu.edu.kh",
+        phone: "+855 23 883 838",
+        email: "info@aeu.edu.kh"
+      },
+      // 28. NUBB (BATTAMBANG)
+      {
+        id: "nubb",
+        nameEn: "National University of Battambang (NUBB)",
+        nameKh: "សាកលវិទ្យាល័យជាតិបាត់ដំបង",
+        shortName: "NUBB / ស.ជ.ប",
+        locationEn: "National Road 5, Sangke, Battambang",
+        locationKh: "ផ្លូវជាតិលេខ៥ ស្រុកសង្កែ ខេត្តបាត់ដំបង",
+        tuitionEn: "$450 – $750 / year",
+        tuitionKh: "$៤៥០ – $៧៥០ / ឆ្នាំ",
+        tuitionValue: 580,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "MoEYS state quota scholarships for high-achieving northwestern region students.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋរបស់ក្រសួងអប់រំសម្រាប់សិស្សឆ្នើមភូមិភាគពាយព្យ។",
+        hasDirectFee: true,
+        directDetailsEn: "Leading public research university in Northwestern Cambodia.",
+        directDetailsKh: "សាកលវិទ្យាល័យរដ្ឋឈានមុខគេប្រចាំភូមិភាគពាយព្យនៃប្រទេសកម្ពុជា។",
+        branches: ["tech", "business", "engineering", "language"],
+        majors: [
+          { en: "Agronomy & Food Processing", kh: "កសិសាស្ត្រ និងកែច្នៃអាហារ", branch: "engineering" },
+          { en: "Software Eng & IT", kh: "វិស្វកម្មសូហ្វវែរ និង IT", branch: "tech" },
+          { en: "Economics & Agribusiness", kh: "សេដ្ឋកិច្ច និងធុរកិច្ចកសិកម្ម", branch: "business" }
+        ],
+        badge: "Northwest Public Hub",
+        website: "https://nubb.edu.kh",
+        phone: "+855 53 952 905",
+        email: "info@nubb.edu.kh"
+      },
+      // 29. SVAY RIENG UNIVERSITY
+      {
+        id: "sru",
+        nameEn: "Svay Rieng University (SRU)",
+        nameKh: "សាកលវិទ្យាល័យ ស្វាយរៀង",
+        shortName: "SRU / ស.ស.រ",
+        locationEn: "National Road 1, Svay Rieng City, Svay Rieng",
+        locationKh: "ផ្លូវជាតិលេខ ១ ក្រុងស្វាយរៀង ខេត្តស្វាយរៀង",
+        tuitionEn: "$400 – $650 / year",
+        tuitionKh: "$៤០០ – $៦៥០ / ឆ្នាំ",
+        tuitionValue: 500,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "MoEYS national priority scholarships for rural border province students.",
+        scholarshipDetailsKh: "អាហារូបករណ៍អាទិភាពរដ្ឋ ១០០% សម្រាប់សិស្សានុសិស្សនៅតំបន់ព្រំដែន។",
+        hasDirectFee: true,
+        directDetailsEn: "Highly affordable tuition focusing on regional industry and engineering.",
+        directDetailsKh: "តម្លៃសិក្សាទាបសមរម្យ ផ្តោតលើឧស្សាហកម្ម និងវិស្វកម្មប្រចាំតំបន់សេដ្ឋកិច្ចពិសេស។",
+        branches: ["engineering", "tech", "business", "language"],
+        majors: [
+          { en: "Mechanical & Electrical Eng.", kh: "វិស្វកម្មមេកានិក និងអគ្គិសនី", branch: "engineering" },
+          { en: "Business Admin & Accounting", kh: "គ្រប់គ្រងពាណិជ្ជកម្ម និងគណនេយ្យ", branch: "business" },
+          { en: "Information Technology", kh: "បច្ចេកវិទ្យាព័ត៌មាន", branch: "tech" }
+        ],
+        badge: "Provincial Public Uni",
+        website: "https://sru.edu.kh",
+        phone: "+855 44 715 777",
+        email: "info@sru.edu.kh"
+      },
+      // 30. USEA (SOUTHEAST ASIA)
+      {
+        id: "usea",
+        nameEn: "University of Southeast Asia (USEA)",
+        nameKh: "សាកលវិទ្យាល័យ សៅស៍អ៊ីសថ៍អេសៀ",
+        shortName: "USEA / សៀមរាប",
+        locationEn: "Wat Bo, Sala Kamreuk, Siem Reap City",
+        locationKh: "ភូមិវត្តបូព៌ សង្កាត់សាលាកំរើក ក្រុងសៀមរាប",
+        tuitionEn: "$450 – $800 / year",
+        tuitionKh: "$៤៥០ – $៨០០ / ឆ្នាំ",
+        tuitionValue: 600,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Tourism and hospitality foundation grants + BACII grade discounts.",
+        scholarshipDetailsKh: "អាហារូបករណ៍លើកទឹកចិត្ត និងការបញ្ចុះតម្លៃលើជំនាញទេសចរណ៍-បច្ចេកវិទ្យា។",
+        hasDirectFee: true,
+        directDetailsEn: "Top private institution in Siem Reap tailored to tourism, IT, and business.",
+        directDetailsKh: "គ្រឹះស្ថានឧត្តមសិក្សាឈានមុខនៅសៀមរាប ផ្តោតលើទេសចរណ៍ IT និងពាណិជ្ជកម្ម។",
+        branches: ["business", "language", "tech"],
+        majors: [
+          { en: "Tourism & Hospitality", kh: "គ្រប់គ្រងទេសចរណ៍ និងបដិសណ្ឋារកិច្ច", branch: "business" },
+          { en: "English & International Comm.", kh: "ភាសាអង់គ្លេស និងទំនាក់ទំនង", branch: "language" },
+          { en: "IT & Web Programming", kh: "ព័ត៌មានវិទ្យា និងការបង្កើតវេបសាយ", branch: "tech" }
+        ],
+        badge: "Siem Reap Regional Hub",
+        website: "https://www.usea.edu.kh",
+        phone: "+855 63 963 883",
+        email: "info@usea.edu.kh"
+      },
+      // 31. RUA (ROYAL UNIVERSITY OF AGRICULTURE)
+      {
+        id: "rua",
+        nameEn: "Royal University of Agriculture (RUA)",
+        nameKh: "សាកលវិទ្យាល័យភូមិន្ទកសិកម្ម (ចំការដូង)",
+        shortName: "RUA / ចំការដូង",
+        locationEn: "Dangkor District, Phnom Penh",
+        locationKh: "ខណ្ឌដង្កោ រាជធានីភ្នំពេញ",
+        tuitionEn: "$500 – $900 / year",
+        tuitionKh: "$៥០០ – $៩០០ / ឆ្នាំ",
+        tuitionValue: 700,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "MAFF and MoEYS state scholarship allocation; Israel trainee programs.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋ ១០០% និងកម្មវិធីកម្មសិក្សាការងារកសិកម្មនៅប្រទេសអ៊ីស្រាអែល។",
+        hasDirectFee: true,
+        directDetailsEn: "Cambodia's oldest and most prestigious agricultural & veterinary institute.",
+        directDetailsKh: "គ្រឹះស្ថានឧត្តមសិក្សាស្រាវជ្រាវកសិកម្ម និងបសុព្យាបាលចំណាស់ជាងគេនៅកម្ពុជា។",
+        branches: ["engineering", "health"],
+        majors: [
+          { en: "Veterinary Medicine (DVM)", kh: "វេជ្ជសាស្ត្រសត្វ (បសុពេទ្យ)", branch: "health" },
+          { en: "Agronomy & Soil Science", kh: "កសិសាស្ត្រ និងវិទ្យាសាស្ត្រដី", branch: "engineering" },
+          { en: "Agricultural Engineering", kh: "វិស្វកម្មកសិកម្ម និងធនធានទឹក", branch: "engineering" }
+        ],
+        badge: "Top Agriculture State Uni",
+        website: "https://www.rua.edu.kh",
+        phone: "+855 23 219 690",
+        email: "info@rua.edu.kh"
+      },
+      // 32. CHENLA
+      {
+        id: "chenla",
+        nameEn: "Chenla University (CLU)",
+        nameKh: "សាកលវិទ្យាល័យ ចេនឡា",
+        shortName: "Chenla / ចេនឡា",
+        locationEn: "St 271, Phsar Doeum Thkov, Chamkarmon, Phnom Penh",
+        locationKh: "ផ្លូវ ២៧១ ផ្សារដើមថ្កូវ ខណ្ឌចំការមន រាជធានីភ្នំពេញ",
+        tuitionEn: "$900 – $2,200 / year",
+        tuitionKh: "$៩០០ – $២,២០០ / ឆ្នាំ",
+        tuitionValue: 1500,
+        isBudgetFriendly: false,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Nursing and health sciences merit scholarships.",
+        scholarshipDetailsKh: "អាហារូបករណ៍លើកទឹកចិត្តសម្រាប់ជំនាញគិលានុបដ្ឋាក និងសុខាភិបាល។",
+        hasDirectFee: true,
+        directDetailsEn: "Well known for accessible clinical Nursing, Midwifery, and Business programs.",
+        directDetailsKh: "លេចធ្លោលើការបណ្តុះបណ្តាលគិលានុបដ្ឋាក ឆ្មប និងការគ្រប់គ្រង។",
+        branches: ["health", "business"],
+        majors: [
+          { en: "Nursing & Midwifery", kh: "គិលានុបដ្ឋាក និងឆ្មប", branch: "health" },
+          { en: "Public Health", kh: "សុខភាពសាធារណៈ", branch: "health" },
+          { en: "Business Administration", kh: "គ្រប់គ្រងពាណិជ្ជកម្ម", branch: "business" }
+        ],
+        badge: "Nursing & Health Care",
+        website: "https://chenla.edu.kh",
+        phone: "+855 23 884 488",
+        email: "info@chenla.edu.kh"
+      },
+      // 33. NPIC
+      {
+        id: "npic",
+        nameEn: "National Polytechnic Institute of Cambodia (NPIC)",
+        nameKh: "វិទ្យាស្ថានជាតិពហុបច្ចេកទេសកម្ពុជា",
+        shortName: "NPIC / ពហុបច្ចេកទេស",
+        locationEn: "Phum Prey Popel, Chom Chao, Posenchey, Phnom Penh",
+        locationKh: "ភូមិព្រៃពពេល សង្កាត់ចោមចៅ ខណ្ឌពោធិ៍សែនជ័យ រាជធានីភ្នំពេញ",
+        tuitionEn: "$500 – $800 / year",
+        tuitionKh: "$៥០០ – $៨០០ / ឆ្នាំ",
+        tuitionValue: 650,
+        isBudgetFriendly: true,
+        hasScholarship: true,
+        scholarshipDetailsEn: "Government TVET national scholarships + Korean KOICA joint grants.",
+        scholarshipDetailsKh: "អាហារូបករណ៍រដ្ឋាភិបាល TVET ១០០% និងអាហារូបករណ៍កិច្ចសហការកូរ៉េ KOICA។",
+        hasDirectFee: true,
+        directDetailsEn: "Equipped with advanced high-tech robotic and automotive laboratories.",
+        directDetailsKh: "បំពាក់ដោយមន្ទីរពិសោធន៍គ្រឿងយន្ត ស្វ័យប្រវត្តិកម្ម និងបច្ចេកវិទ្យាកម្រិតខ្ពស់។",
+        branches: ["engineering", "tech"],
+        majors: [
+          { en: "Mechatronics & Robotics", kh: "មេកាត្រូនិក និងរ៉ូបូត", branch: "engineering" },
+          { en: "Automotive Technology", kh: "បច្ចេកវិទ្យារថយន្ត", branch: "engineering" },
+          { en: "Electronics & Network Eng.", kh: "អេឡិចត្រូនិក និងវិស្វកម្មបណ្តាញ", branch: "tech" }
+        ],
+        badge: "Leading TVET & Robotics",
+        website: "https://npic.edu.kh",
+        phone: "+855 23 630 1978",
+        email: "info@npic.edu.kh"
+      }
+    ];
+
+    // Branch Mapping Meta
+    const branchMeta = {
+      tech: {
+        en: "Technology, Computer Science & IT",
+        kh: "បច្ចេកវិទ្យា វិទ្យាសាស្ត្រកុំព្យូទ័រ និង IT",
+        icon: "fa-laptop-code",
+        color: "text-blue-600 bg-blue-50 border-blue-200"
+      },
+      business: {
+        en: "Business, Banking & Economics",
+        kh: "ធុរកិច្ច ធនាគារ និងសេដ្ឋកិច្ច",
+        icon: "fa-chart-pie",
+        color: "text-amber-600 bg-amber-50 border-amber-200"
+      },
+      engineering: {
+        en: "Engineering, Architecture & TVET",
+        kh: "វិស្វកម្ម ស្ថាបត្យកម្ម និងបច្ចេកទេស",
+        icon: "fa-screwdriver-wrench",
+        color: "text-orange-600 bg-orange-50 border-orange-200"
+      },
+      health: {
+        en: "Health Sciences, Medicine & Nursing",
+        kh: "វិទ្យាសាស្ត្រសុខាភិបាល វេជ្ជសាស្ត្រ និងគិលានុបដ្ឋាក",
+        icon: "fa-heart-pulse",
+        color: "text-red-600 bg-red-50 border-red-200"
+      },
+      language: {
+        en: "Languages, Humanities & Arts",
+        kh: "ភាសាបរទេស មនុស្សសាស្ត្រ និងសិល្បៈ",
+        icon: "fa-language",
+        color: "text-emerald-600 bg-emerald-50 border-emerald-200"
+      },
+      law: {
+        en: "Law, Governance & Military Science",
+        kh: "នីតិសាស្ត្រ អភិបាលកិច្ច និងវិទ្យាសាស្ត្រយោធា",
+        icon: "fa-scale-balanced",
+        color: "text-purple-600 bg-purple-50 border-purple-200"
+      }
+    };
+
+    // State Variables
+    let currentLang = 'en';
+    let currentCollection = 'all'; // 'all', 'scholarship', 'nonscholarship', 'bymajor'
+    let currentMajor = 'all';
+
+    // Set Language (EN / KH)
+    function setLanguage(lang) {
+      currentLang = lang;
+      
+      const btnEn = document.getElementById('lang-en');
+      const btnKh = document.getElementById('lang-kh');
+      if (lang === 'kh') {
+        btnKh.className = "px-2.5 py-1 text-xs font-semibold rounded bg-cambodiaRed text-white transition font-khmer";
+        btnEn.className = "px-2.5 py-1 text-xs font-semibold rounded text-slate-300 hover:text-white transition";
+      } else {
+        btnEn.className = "px-2.5 py-1 text-xs font-semibold rounded bg-cambodiaRed text-white transition";
+        btnKh.className = "px-2.5 py-1 text-xs font-semibold rounded text-slate-300 hover:text-white transition font-khmer";
+      }
+
+      // Static text updates
+      document.getElementById('site-title').textContent = lang === 'kh' ? 'ផតថលឧត្ដមសិក្សាកម្ពុជា' : 'Cambodia UniGuide';
+      document.getElementById('hero-title').textContent = lang === 'kh' ? 'ស្វែងរកសាកលវិទ្យាល័យ អាហារូបករណ៍ និងគេហទំព័រផ្លូវការ' : 'Find Your Ideal University, Scholarship & Direct Link';
+      document.getElementById('hero-subtitle').textContent = lang === 'kh' ? 'ស្វែងរកព័ត៌មានតម្លៃសិក្សា អាហារូបករណ៍រដ្ឋ/ឯកជន ទំនាក់ទំនង និងតំណភ្ជាប់ផ្លូវការនៅទូទាំងប្រទេសកម្ពុជា' : 'Explore tuition fees, MoEYS/private scholarship tracks, verified contact info, and official website portals across Cambodia.';
+      document.getElementById('searchInput').placeholder = lang === 'kh' ? 'ស្វែងរកតាមឈ្មោះ (RUPP, ITC, UP, CamEd), ទីតាំង ឬជំនាញ...' : 'Search by name, abbreviation (RUPP, ITC, UP, CamEd) or major...';
+      document.getElementById('budget-toggle-text').textContent = lang === 'kh' ? 'តម្លៃសមរម្យ (< $១,០០០/ឆ្នាំ)' : 'Budget-Friendly Only (<$1,000/yr)';
+      document.getElementById('filter-label').textContent = lang === 'kh' ? 'ចម្រាញ់តាមជំនាញ៖' : 'Filter Major:';
+      document.getElementById('results-text').textContent = lang === 'kh' ? 'គ្រឹះស្ថានត្រូវបានរកឃើញ' : 'institutions found';
+
+      // Collection tab labels
+      document.querySelectorAll('.tab-label').forEach(el => {
+        el.textContent = lang === 'kh' ? el.getAttribute('data-kh') : el.getAttribute('data-en');
+      });
+
+      render();
+    }
+
+    // Set Collections Tab
+    function selectCollection(col) {
+      currentCollection = col;
+      document.querySelectorAll('.col-tab').forEach(btn => {
+        if(btn.dataset.col === col) {
+          btn.className = "col-tab px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-cambodiaBlue text-white shadow-sm transition";
+        } else {
+          btn.className = "col-tab px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition";
+        }
+      });
+      render();
+    }
+
+    // Set Major Filter
+    function setMajorFilter(branch) {
+      currentMajor = branch;
+      document.querySelectorAll('.major-pill').forEach(btn => {
+        if (btn.dataset.major === branch) {
+          btn.className = "major-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-white";
+        } else {
+          btn.className = "major-pill px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200";
+        }
+      });
+      render();
+    }
+
+    // Clear Search Field
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      render();
+    }
+
+    function handleFilterChange() {
+      render();
+    }
+
+    // Filter Logic
+    function filterUniversities() {
+      const searchRaw = document.getElementById('searchInput').value.trim().toLowerCase();
+      const onlyBudget = document.getElementById('budgetToggle').checked;
+
+      return universities.filter(uni => {
+        if (currentCollection === 'scholarship' && !uni.hasScholarship) return false;
+        if (currentCollection === 'nonscholarship' && !uni.hasDirectFee) return false;
+        if (onlyBudget && !uni.isBudgetFriendly) return false;
+        if (currentMajor !== 'all' && !uni.branches.includes(currentMajor)) return false;
+
+        if (searchRaw) {
+          const inNameEn = uni.nameEn.toLowerCase().includes(searchRaw);
+          const inNameKh = uni.nameKh.toLowerCase().includes(searchRaw);
+          const inShort = uni.shortName.toLowerCase().includes(searchRaw);
+          const inLocEn = uni.locationEn.toLowerCase().includes(searchRaw);
+          const inLocKh = uni.locationKh.toLowerCase().includes(searchRaw);
+
+          const inMajors = uni.majors.some(m => 
+            m.en.toLowerCase().includes(searchRaw) || 
+            m.kh.toLowerCase().includes(searchRaw)
+          );
+
+          if (!inNameEn && !inNameKh && !inShort && !inLocEn && !inLocKh && !inMajors) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+    }
+
+    // Main Render Function
+    function render() {
+      const container = document.getElementById('university-display');
+      const filtered = filterUniversities();
+      document.getElementById('results-count').textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-12 text-center border border-slate-200">
+            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-2xl mb-4">
+              <i class="fa-solid fa-school-circle-xmark"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800 font-khmer">
+              ${currentLang === 'kh' ? 'មិនមានទិន្នន័យត្រូវគ្នានឹងការស្វែងរករបស់អ្នកឡើយ' : 'No Institutions Found'}
+            </h3>
+            <p class="text-slate-500 text-xs mt-1 font-khmer">
+              ${currentLang === 'kh' ? 'សូមព្យាយាមស្វែងរកពាក្យគន្លឹះផ្សេងទៀត ឬដោះការជ្រើសរើសចម្រាញ់។' : 'Try searching another keyword or clearing budget/major filters.'}
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      if (currentCollection === 'bymajor') {
+        renderGroupedByMajor(filtered, container);
+      } else {
+        renderStandardGrid(filtered, container);
+      }
+    }
+
+    // Standard Grid View
+    function renderStandardGrid(list, container) {
+      let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">';
+      list.forEach(uni => {
+        html += generateUniversityCardHTML(uni);
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Grouped by Major View
+    function renderGroupedByMajor(list, container) {
+      const branches = ['tech', 'business', 'engineering', 'health', 'language', 'law'];
+      let html = '<div class="space-y-10">';
+
+      branches.forEach(branchKey => {
+        const matchingUnis = list.filter(u => u.branches.includes(branchKey));
+        if (matchingUnis.length === 0) return;
+
+        const meta = branchMeta[branchKey];
+        const title = currentLang === 'kh' ? meta.kh : meta.en;
+
+        html += `
+          <div class="border border-slate-200 rounded-2xl bg-white p-5 shadow-sm">
+            <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-slate-100">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center ${meta.color}">
+                <i class="fa-solid ${meta.icon} text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-slate-900 text-base md:text-lg font-khmer">${title}</h3>
+                <p class="text-xs text-slate-500">${matchingUnis.length} ${currentLang === 'kh' ? 'គ្រឹះស្ថានឧត្ដមសិក្សា' : 'universities offering this field'}</p>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              ${matchingUnis.map(uni => generateUniversityCardHTML(uni, branchKey)).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Card Template Generator with Detailed Contacts and Official Page Link
+    function generateUniversityCardHTML(uni, highlightedBranch = null) {
+      const isKh = currentLang === 'kh';
+      const name = isKh ? uni.nameKh : uni.nameEn;
+      const subName = isKh ? uni.nameEn : uni.nameKh;
+      const location = isKh ? uni.locationKh : uni.locationEn;
+      const tuition = isKh ? uni.tuitionKh : uni.tuitionEn;
+      const schDetails = isKh ? uni.scholarshipDetailsKh : uni.scholarshipDetailsEn;
+      const directDetails = isKh ? uni.directDetailsKh : uni.directDetailsEn;
+
+      return `
+        <div class="bg-white rounded-xl border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md transition flex flex-col justify-between overflow-hidden">
+          
+          <!-- Card Content Body -->
+          <div class="p-5">
+            <!-- Badge Header -->
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <span class="text-[11px] font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                ${uni.badge}
+              </span>
+              ${uni.isBudgetFriendly ? `
+                <span class="badge-budget text-[11px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center">
+                  <i class="fa-solid fa-coins mr-1 text-[10px]"></i> ${isKh ? 'តម្លៃសមរម្យ' : 'Budget Friendly'}
+                </span>
+              ` : ''}
+            </div>
+
+            <!-- University Title -->
+            <h3 class="font-bold text-slate-900 text-base leading-snug font-khmer mt-1">
+              ${name}
+            </h3>
+            <p class="text-xs text-slate-400 mb-2.5 font-khmer">${subName} • <span class="text-cambodiaRed font-bold">${uni.shortName}</span></p>
+
+            <p class="text-xs text-slate-500 flex items-start mb-3 font-khmer">
+              <i class="fa-solid fa-location-dot mr-1.5 mt-0.5 text-slate-400 shrink-0"></i> <span>${location}</span>
+            </p>
+
+            <!-- Offered Majors -->
+            <div class="mb-3.5">
+              <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+                ${isKh ? 'ជំនាញលេចធ្លោ៖' : 'Offered Majors:'}
+              </div>
+              <div class="flex flex-wrap gap-1">
+                ${uni.majors.map(m => {
+                  const isHighlighted = highlightedBranch && m.branch === highlightedBranch;
+                  return `
+                    <span class="text-[11px] px-2 py-0.5 rounded-md font-khmer ${isHighlighted ? 'bg-blue-600 text-white font-medium' : 'bg-slate-100 text-slate-700'}">
+                      ${isKh ? m.kh : m.en}
+                    </span>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Tuition & Scholarship Information Blocks -->
+            <div class="space-y-2 pt-2.5 border-t border-slate-100 text-xs">
+              
+              <!-- Direct Fee Tuition -->
+              <div class="p-2.5 rounded-lg bg-amber-50/70 border border-amber-200/70">
+                <div class="flex items-center justify-between font-semibold text-amber-900 mb-1">
+                  <span><i class="fa-solid fa-receipt mr-1 text-amber-600"></i> ${isKh ? 'តម្លៃសិក្សាទូទៅ (បង់ថ្លៃ)' : 'Direct Tuition (Self-Pay)'}</span>
+                  <span class="font-bold text-amber-950 font-khmer">${tuition}</span>
+                </div>
+                <p class="text-[11px] text-amber-800 leading-relaxed font-khmer">${directDetails}</p>
+              </div>
+
+              <!-- Scholarship Track -->
+              <div class="p-2.5 rounded-lg bg-indigo-50/70 border border-indigo-200/70">
+                <div class="flex items-center font-semibold text-indigo-900 mb-1">
+                  <i class="fa-solid fa-graduation-cap mr-1 text-indigo-600"></i>
+                  <span>${isKh ? 'ឱកាសអាហារូបករណ៍' : 'Scholarship Track'}</span>
+                </div>
+                <p class="text-[11px] text-indigo-800 leading-relaxed font-khmer">${schDetails}</p>
+              </div>
+
+            </div>
+
+            <!-- CONTACT DETAILS SECTION (BELOW EVERY UNIVERSITY) -->
+            <div class="mt-3.5 pt-3 border-t border-slate-100 bg-slate-50/80 -mx-5 -mb-5 px-5 py-3 text-xs">
+              <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center">
+                <i class="fa-solid fa-address-book mr-1.5 text-slate-400"></i> ${isKh ? 'ទំនាក់ទំនងសាកសួរ៖' : 'Direct Contact Info:'}
+              </div>
+              <div class="space-y-1.5 text-slate-600">
+                <div class="flex items-center truncate">
+                  <i class="fa-solid fa-phone text-emerald-600 w-4 mr-1 text-xs"></i>
+                  <a href="tel:${uni.phone}" class="hover:text-emerald-700 font-medium tracking-tight text-xs">${uni.phone}</a>
+                </div>
+                <div class="flex items-center truncate">
+                  <i class="fa-solid fa-envelope text-blue-600 w-4 mr-1 text-xs"></i>
+                  <a href="mailto:${uni.email}" class="hover:text-blue-700 text-xs font-sans text-slate-700 truncate">${uni.email}</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Card Footer with Link to Official Webpage -->
+          <div class="px-5 py-3 bg-slate-100 border-t border-slate-200 flex items-center justify-between text-xs">
+            <span class="text-slate-500 font-sans"><i class="fa-solid fa-globe mr-1 text-slate-400"></i> Official Portal</span>
+            
+            <!-- Direct External Link to Official Page -->
+            <a 
+              href="${uni.website}" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="inline-flex items-center font-semibold text-cambodiaBlue hover:text-cambodiaRed transition group"
+            >
+              <span class="font-khmer mr-1">${isKh ? 'គេហទំព័រផ្លូវការ' : 'View Official Page'}</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+            </a>
+          </div>
+
+        </div>
+      `;
+    }
+
+    // Initial Load
+    document.addEventListener('DOMContentLoaded', () => {
+      render();
+    });
+  </script>
+</body>
+</html>
